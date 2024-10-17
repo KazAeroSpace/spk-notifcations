@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  spk-notifications-prod:
+    image: kazaerospacellp/spk_notifications:latest
+    env_file:
+      - .env
+    container_name: spk-back
+    restart: unless-stopped
+    environment:
+      - C_FORCE_ROOT=true
+    network_mode: "host"
