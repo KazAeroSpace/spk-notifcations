@@ -126,7 +126,8 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'DELETE'
 ]
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
