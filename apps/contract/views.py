@@ -3,7 +3,11 @@ import telebot
 import requests
 from rest_framework.response import Response
 from rest_framework import status, permissions as permissions, viewsets
+from rest_framework.decorators import api_view
 from django.db.transaction import atomic
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
 
 # Local
 from django.conf import settings
@@ -97,6 +101,19 @@ def handle_contact(message):
         print("else handle contact")
         message_text = "Не удалось получить ваш контакт. Пожалуйста, попробуйте снова: /start"
         send_message_custom(chat_id=chat_id, message_text=message_text)
+
+
+@csrf_exempt  # нужно для отключения CSRF-защиты для данного view
+@api_view(['PUT', 'GET', 'POST'])
+def webhook(request):
+    if request.method == 'POST':
+        # получаем данные из запроса от Telegram
+        json_str = request.body.decode('UTF-8')
+        update = telebot.types.Update.de_json(json_str)
+        bot.process_new_updates([update])
+        return HttpResponse('Cant use post')
+    else:
+        return HttpResponse('Tg bot webhook for spk-notifications')
 
 
 if settings.IS_LOCAL:
