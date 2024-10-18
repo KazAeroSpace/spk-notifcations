@@ -28,7 +28,7 @@ jobs:
           tags: kazaerospacellp/spk-notifications:latest
 
   deploy:
-    runs-on: spk-back
+    runs-on: spk-back-prod
     needs: build
 
     steps:
