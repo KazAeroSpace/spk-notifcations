@@ -43,7 +43,7 @@ jobs:
 
       - name: 💿 Re-run App
         run: |
-          cd /home/tazaqaz/actions-runner-back/_work/spk_notifications
+          cd /home/tazaqaz/actions-runner-back/_work/spk-notifcations
           docker-compose up -d --remove-orphans --no-deps
 
       - name: 📀 Migrations
