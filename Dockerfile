@@ -22,9 +22,9 @@ RUN mkdir -p logs
 #COPY ./static /var/static
 RUN python manage.py collectstatic --no-input
 
-RUN apt install -y ca-certificates &&  \
-    cp USIAG.crt /usr/local/share/ca-certificates/ && ls /usr/local/share/ca-certificates/ &&  \
-    update-ca-certificates
+RUN #apt install -y ca-certificates &&  \
+#    cp USIAG.crt /usr/local/share/ca-certificates/ && ls /usr/local/share/ca-certificates/ &&  \
+#    update-ca-certificates
 
 #CMD gunicorn -b 0.0.0.0:8010 taza_qaz_backend.wsgi
 CMD gunicorn -b 0.0.0.0:$GUNICORN_PORT spk_notifications.wsgi --workers 2 --timeout 600
