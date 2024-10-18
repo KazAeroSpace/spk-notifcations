@@ -1,0 +1,58 @@
+name: SPK Notifications CI-CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 📥 Setup Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_AUTH_USERNAME }}
+          password: ${{ secrets.SPK_BACKEND_RW_TOKEN }}
+
+      - name: 📦 Build and push to register
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: kazaerospacellp/spk-notifications:latest
+
+  deploy:
+    runs-on: spk-back
+    needs: build
+
+    steps:
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_AUTH_USERNAME }}
+          password: ${{ secrets.SPK_BACKEND_R_TOKEN }}
+
+      - name: 🗽 Pull latest version
+        run: docker pull kazaerospacellp/spk-notifications:latest
+
+      - name: 💿 Re-run App
+        run: |
+          cd /home/githubuser/actions-runner-back/_work/spk_notifications
+          docker-compose up -d --remove-orphans --no-deps
+
+      - name: 📀 Migrations
+        run: |
+          docker exec -i  spk-back python3 manage.py migrate
+
+      - name: 💫 Clear unnecessary images
+        run: docker image prune -a -f
+
+      - name: 🔥 Done
+        run: |
+          echo "Finish"
