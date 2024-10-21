@@ -26,6 +26,7 @@ class ContractViewSet(viewsets.ModelViewSet):
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    print("------ START ------------")
     print("1")
     chat_id = message.chat.id
     tg_username = ''
@@ -62,6 +63,7 @@ def send_welcome(message):
                             f"Для этого пожалуйста вначале поделитесь своим телефоном, нажав кнопку ниже:\n")
 
             send_message_for_get_contact(chat_id=chat_id, message_text=message_text)
+    print("------ FINISH ------------")
 
 @bot.message_handler(content_types=['contact'])
 def handle_contact(message):
