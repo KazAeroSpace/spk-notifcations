@@ -57,12 +57,18 @@ def send_welcome(message):
     print("3")
     # check_user = 1
     if check_user:
-        if check_user.phone is not None:
+        print("4")
+        if check_user.phone is None:
+            print("4.1")
             message_text = (f"Здравствуйте, {tg_username}.\n"
                             f"Перед тем, как начать пользоваться ботом, необходимо зарегистрироваться\n"
                             f"Для этого пожалуйста вначале поделитесь своим телефоном, нажав кнопку ниже:\n")
 
             send_message_for_get_contact(chat_id=chat_id, message_text=message_text)
+        else:
+            print("4.2")
+            message_text = "Чтобы узнать данные своего договора, отправьте его номер"
+            send_message_custom(chat_id=chat_id, message_text=message_text)
     print("------ FINISH ------------")
 
 @bot.message_handler(content_types=['contact'])
