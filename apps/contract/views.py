@@ -71,6 +71,7 @@ def send_welcome(message):
             send_message_custom(chat_id=chat_id, message_text=message_text)
     print("------ FINISH ------------")
 
+
 @bot.message_handler(content_types=['contact'])
 def handle_contact(message):
     print("----handle_contact---")

@@ -29,3 +29,19 @@ class UserAdmin(admin.ModelAdmin):
         'last_login',
         'is_superuser'
     ]
+
+@admin.register(models.TgMessageHistory)
+class TgMessageHistoryAdmin(admin.ModelAdmin):
+    search_fields = ['user__tg_chat_id',
+                     'user__username', 'user__first_name',]
+    date_hierarchy = "created_at"
+    list_filter = ['is_deleted', 'message_type']
+    autocomplete_fields = ['user',]
+    list_display = ['id',
+                    'message_type',
+                    'user',
+                    'message_id',
+                    'is_deleted',
+                    'deleted_at',
+                    'created_at'
+                    ]
