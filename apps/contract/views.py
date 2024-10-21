@@ -165,19 +165,23 @@ def receive_all_feedback(message):
                             num=contract_number
                         ).last()
                         print(f"contract 2: {contract}")
-                        if contract and contract.user is not None:
-                            print("no user match")
-                            message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
-                                            f"Пожалуйста, наберите /start чтобы проверить другой номер договора")
-                            send_message_custom(chat_id=chat_id, message_text=message_text)
-
-                        if contract and contract.phone_num == user.phone:
-                            print("user phone match")
-                            contract.user = user
-                            contract.save()
-                            message_text = (f"Вы успешно прикреплены к договору номер {contract_number}\n"
-                                            f"В случае если до его конца останется менее 7 дней, "
-                                            f"вы получите уведомление")
+                        if contract:
+                            if contract.user is not None:
+                                print("no user match")
+                                message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
+                                                f"Пожалуйста, наберите /start чтобы проверить другой номер договора")
+                                send_message_custom(chat_id=chat_id, message_text=message_text)
+                            if contract.phone_num == user.phone:
+                                print("user phone match")
+                                contract.user = user
+                                contract.save()
+                                message_text = (f"Вы успешно прикреплены к договору номер {contract_number}\n"
+                                                f"В случае если до его конца останется менее 7 дней, "
+                                                f"вы получите уведомление")
+                                send_message_custom(chat_id=chat_id, message_text=message_text)
+                        else:
+                            message_text = (f"В системе не найдены договора по вашим данным.\n"
+                                            f"Нажмите /start чтобы пройти регистрация заново\n\n")
                             send_message_custom(chat_id=chat_id, message_text=message_text)
 
             else:
