@@ -119,11 +119,13 @@ def receive_all_feedback(message):
     chat_id = message.chat.id
     user = User.objects.filter(tg_chat_id=chat_id).last()
     if user:
+        print(f"user: {user}")
         user_phone = user.phone
         cleaned_feedback = message.text
         username = ""
 
         if user_phone and user_phone != "":
+            print("has phone")
             last_name = user.last_name
             first_name = user.first_name
             patronymic = user.patronymic
@@ -131,17 +133,20 @@ def receive_all_feedback(message):
 
             check_history = TgMessageHistory.objects.filter(
                 message_type__in=[MessageType.ASK_CONTRACT_NUMBER],
-                tg_user=user,
+                user=user,
                 is_deleted=False
             ).last()
+            print(f"check_history: {check_history}")
             if check_history:
                 check_history.is_deleted = True
                 check_history.deleted_at = datetime.now()
                 check_history.save()
 
                 if check_history.message_type == MessageType.ASK_CONTRACT_NUMBER:
+                    print(f"check_history.message_type: {check_history.message_type}")
                     contract_number = cleaned_feedback
                     contract = Contract.objects.filter(user=user).last()
+                    print(f"contract 1: {contract}")
                     if contract:
                         if contract.num == contract_number:
                             print("contract number match")
@@ -159,12 +164,15 @@ def receive_all_feedback(message):
                         contract = Contract.objects.filter(
                             num=contract_number
                         ).last()
+                        print(f"contract 2: {contract}")
                         if contract and contract.user is not None:
+                            print("no user match")
                             message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
                                             f"Пожалуйста, наберите /start чтобы проверить другой номер договора")
                             send_message_custom(chat_id=chat_id, message_text=message_text)
 
                         if contract and contract.phone_num == user.phone:
+                            print("user phone match")
                             contract.user = user
                             contract.save()
                             message_text = (f"Вы успешно прикреплены к договору номер {contract_number}\n"
@@ -178,6 +186,7 @@ def receive_all_feedback(message):
                                 f"/help - Краткая справка о боте\n\n")
                 send_message_custom(chat_id=chat_id, message_text=message_text)
         else:
+            print("no phone at user")
             message_text = (f"Вы не прошли регистрация до конца. В системе отсутствует ваш номер телефона.\n"
                             f"Нажмите /start чтобы пройти регистрация до конца\n\n")
             send_message_custom(chat_id=chat_id, message_text=message_text)
