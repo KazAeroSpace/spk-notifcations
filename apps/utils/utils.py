@@ -9,7 +9,7 @@ from apps.user.models import User
 
 def send_message_for_get_contact(chat_id, message_text):
     # Кастомная отправка сообщений с помощью requests
-    check_tg_user = User.objects.filter(chat_id=chat_id,).last()
+    check_tg_user = User.objects.filter(tg_chat_id=chat_id).last()
 
     if check_tg_user:
         url = f'https://api.telegram.org/bot{settings.TOKEN}/sendMessage'
@@ -55,7 +55,7 @@ def send_message_for_get_contact(chat_id, message_text):
 
 def send_message_custom(chat_id, message_text, parse_mode='Markdown', web_url=None, button_label=""):
     # Кастомная отправка сообщений с помощью requests
-    check_tg_user = User.objects.filter(chat_id=chat_id,).last()
+    check_tg_user = User.objects.filter(tg_chat_id=chat_id,).last()
     if check_tg_user:
         url = f'https://api.telegram.org/bot{settings.TOKEN}/sendMessage'
 
@@ -102,7 +102,7 @@ def send_message_custom(chat_id, message_text, parse_mode='Markdown', web_url=No
 
 
 def send_message_remove_markup(chat_id, message_text):
-    check_tg_user = User.objects.filter(chat_id=chat_id,).last()
+    check_tg_user = User.objects.filter(tg_chat_id=chat_id,).last()
     if check_tg_user:
         url = f'https://api.telegram.org/bot{settings.TOKEN}/sendMessage'
         markup = json.dumps({"remove_keyboard": True})
