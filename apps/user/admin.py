@@ -30,6 +30,7 @@ class UserAdmin(admin.ModelAdmin):
         'is_superuser'
     ]
 
+
 @admin.register(models.TgMessageHistory)
 class TgMessageHistoryAdmin(admin.ModelAdmin):
     search_fields = ['user__tg_chat_id',

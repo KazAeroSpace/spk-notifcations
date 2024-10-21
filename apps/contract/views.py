@@ -1,6 +1,7 @@
 # Vendor
 import telebot
 import requests
+from datetime import datetime
 from rest_framework.response import Response
 from rest_framework import status, permissions as permissions, viewsets
 from rest_framework.decorators import api_view
@@ -110,6 +111,81 @@ def handle_contact(message):
         print("else handle contact")
         message_text = "Не удалось получить ваш контакт. Пожалуйста, попробуйте снова: /start"
         send_message_custom(chat_id=chat_id, message_text=message_text)
+
+
+@bot.message_handler(func=lambda message: True)
+def receive_all_feedback(message):
+    print("--------- receieve all messages ---------")
+    chat_id = message.chat.id
+    user = User.objects.filter(tg_chat_id=chat_id).last()
+    if user:
+        user_phone = user.phone
+        cleaned_feedback = message.text
+        username = ""
+
+        if user_phone and user_phone != "":
+            last_name = user.last_name
+            first_name = user.first_name
+            patronymic = user.patronymic
+            full_name = f"{last_name} {first_name} {patronymic}"
+
+            check_history = TgMessageHistory.objects.filter(
+                message_type__in=[MessageType.ASK_CONTRACT_NUMBER],
+                tg_user=user,
+                is_deleted=False
+            ).last()
+            if check_history:
+                check_history.is_deleted = True
+                check_history.deleted_at = datetime.now()
+                check_history.save()
+
+                if check_history.message_type == MessageType.ASK_CONTRACT_NUMBER:
+                    contract_number = cleaned_feedback
+                    contract = Contract.objects.filter(user=user).last()
+                    if contract:
+                        if contract.num == contract_number:
+                            print("contract number match")
+                            message_text = (f"Вы уже прикреплены к договору номер {contract_number}\n"
+                                            f"В случае если до его конца останется менее 7 дней, "
+                                            f"вы получите уведомление")
+                            send_message_custom(chat_id=chat_id, message_text=message_text)
+                        else:
+                            message_text = (f"Вы уже прикреплены к договору номер {contract.num}, а {contract_number}"
+                                            f"принадлежит не вам.\n"
+                                            f"В случае если до его конца останется менее 7 дней, "
+                                            f"вы получите уведомление")
+                            send_message_custom(chat_id=chat_id, message_text=message_text)
+                    else:
+                        contract = Contract.objects.filter(
+                            num=contract_number
+                        ).last()
+                        if contract and contract.user is not None:
+                            message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
+                                            f"Пожалуйста, наберите /start чтобы проверить другой номер договора")
+                            send_message_custom(chat_id=chat_id, message_text=message_text)
+
+                        if contract and contract.phone_num == user.phone:
+                            contract.user = user
+                            contract.save()
+                            message_text = (f"Вы успешно прикреплены к договору номер {contract_number}\n"
+                                            f"В случае если до его конца останется менее 7 дней, "
+                                            f"вы получите уведомление")
+                            send_message_custom(chat_id=chat_id, message_text=message_text)
+
+            else:
+                print("didnt find history")
+                message_text = (f"/start - Зарегистрироваться\n"
+                                f"/help - Краткая справка о боте\n\n")
+                send_message_custom(chat_id=chat_id, message_text=message_text)
+        else:
+            message_text = (f"Вы не прошли регистрация до конца. В системе отсутствует ваш номер телефона.\n"
+                            f"Нажмите /start чтобы пройти регистрация до конца\n\n")
+            send_message_custom(chat_id=chat_id, message_text=message_text)
+
+    else:
+        message_text = "Нажмите /start"
+        send_message_custom(chat_id=chat_id, message_text=message_text)
+    print(" -------------- end receive all feedbacks ---------------")
 
 
 @csrf_exempt  # нужно для отключения CSRF-защиты для данного view
