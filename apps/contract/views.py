@@ -69,7 +69,13 @@ def send_welcome(message):
         else:
             print("4.2")
             message_text = "Чтобы узнать данные своего договора, отправьте его номер"
-            send_message_custom(chat_id=chat_id, message_text=message_text)
+            message_id = send_message_custom(chat_id=chat_id, message_text=message_text)
+            if message_id:
+                TgMessageHistory.objects.create(
+                    message_type=MessageType.ASK_CONTRACT_NUMBER,
+                    user=check_user,
+                    message_id=message_id,
+                )
     print("------ FINISH ------------")
 
 
