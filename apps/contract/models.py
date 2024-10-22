@@ -13,6 +13,11 @@ class Contract(models.Model):
         null=True,
         blank=True
     )
+    contract_date = models.DateField(
+        verbose_name="Дата договора",
+        null=True,
+        blank=True
+    )
     exp_date = models.DateField(
         verbose_name="Дата истечения договора",
         null=True,
@@ -96,6 +101,21 @@ class Contract(models.Model):
         'user.User',
         on_delete=models.DO_NOTHING,
         verbose_name="Пользователь",
+        null=True,
+        blank=True
+    )
+    tech_passport = models.CharField(
+        max_length=256,
+        null=True,
+        blank=True
+    )
+    payment_date = models.DateField(
+        verbose_name="Дата оплаты",
+        null=True,
+        blank=True
+    )
+    last_payment_date = models.DateField(
+        verbose_name="Дата последней оплаты",
         null=True,
         blank=True
     )

@@ -1,10 +1,13 @@
 # Vendor
 import json
 import requests
+from rest_framework import status
+from datetime import datetime
 
 # Local
 from django.conf import settings
 from apps.user.models import User
+from .exceptions import CustomException
 
 
 def send_message_for_get_contact(chat_id, message_text):
@@ -131,3 +134,48 @@ def send_message_remove_markup(chat_id, message_text):
             print(f'Ошибка при удалении кнопки Поделиться 1')
     else:
         return None
+
+
+def get_arcgis_token():
+    username: str = settings.ARCGIS_USERNAME
+    password: str = settings.ARCGIS_PASSWORD
+    get_token_url = settings.ARCGIS_URL_FOR_TOKEN
+    arcgis_token_expiration:int = 3600
+
+    data_for_token = {
+        "f": "pjson",
+        "username": username,
+        "password": password,
+        "client": "referer",
+        "referer": get_token_url,
+        "expiration": arcgis_token_expiration
+    }
+
+    # print("token_url: {}".format(get_token_url))
+    try:
+        response = requests.post(get_token_url, data=data_for_token, verify=False)
+        # print(f"response.status_code: {response.status_code}")
+        if response.status_code != 200:
+            raise CustomException(translate_code="arcgis_token_get_error", code=status.HTTP_400_BAD_REQUEST)
+        else:
+            data = response.json()
+            if data.get('error'):
+                error_data = data.get('error')
+                msg = 'Ошибка получения токена ARCGIS 1: {} - {}'.format(
+                        error_data.get('message'),
+                        error_data.get('details'))
+                raise CustomException(
+                    detail_ru=msg,
+                    detail_en=msg,
+                    detail_kk=msg,
+                    code=status.HTTP_400_BAD_REQUEST
+                )
+        return response.json()
+    except:
+        raise CustomException(translate_code="arcgis_get_error", code=status.HTTP_400_BAD_REQUEST)
+
+def parse_timestamp(timestamp):
+    if timestamp is not None:
+        timestamp = int(timestamp) / 1000
+        return datetime.fromtimestamp(timestamp)
+    return None

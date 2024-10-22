@@ -140,3 +140,8 @@ BOT_POLLING = os.environ.get("BOT_POLLING")
 IS_LOCAL = os.environ.get("IS_LOCAL")
 
 IS_DEV = os.getenv('IS_DEV', True)
+
+ARCGIS_USERNAME = os.environ.get("ARCGIS_USERNAME")
+ARCGIS_PASSWORD = os.environ.get("ARCGIS_PASSWORD")
+ARCGIS_CONTRACT_URL = os.environ.get("ARCGIS_CONTRACT_URL")
+ARCGIS_URL_FOR_TOKEN = os.environ.get("ARCGIS_URL_FOR_TOKEN")
