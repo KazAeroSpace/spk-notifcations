@@ -26,6 +26,7 @@ bot = telebot.TeleBot(settings.TOKEN)
 class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
     serializer_class = ContractSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 @bot.message_handler(commands=['start'])
