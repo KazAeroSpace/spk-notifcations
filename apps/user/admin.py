@@ -5,7 +5,7 @@ from . import models
 @admin.register(models.User)
 class UserAdmin(admin.ModelAdmin):
     search_fields = ['username', 'last_name',
-                     'first_name', 'email', 'iin',
+                     'first_name', 'email', 'phone',
                      'tg_chat_id'
                      ]
     list_filter = ['groups', 'is_staff', 'is_superuser', 'is_blocked', ]
@@ -18,7 +18,7 @@ class UserAdmin(admin.ModelAdmin):
                     'first_name',
                     'patronymic',
                     'email',
-                    'iin',
+                    'phone',
                     'groups_names',
                     'date_joined'
                     )
