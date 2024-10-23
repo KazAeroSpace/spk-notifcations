@@ -66,6 +66,7 @@ class Command(BaseCommand):
                     last_payment_date = parse_timestamp(attrs.get('date_of_actual_payment')),
                     contract_obj.payment_date = payment_date
                     contract_obj.last_payment_date = last_payment_date
+                    contract_obj.phone_num = attrs.get('number_phone'),
                     contract_obj.save()
                     updated += 1
             print("created: ", created)

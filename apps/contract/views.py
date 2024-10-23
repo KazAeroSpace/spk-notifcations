@@ -175,7 +175,8 @@ def receive_all_feedback(message):
                         ).last()
                         print(f"contract 2: {contract}")
                         if contract:
-                            contract_phone_num = contract.phone_num.replace(" ", "")
+
+                            contract_phone_num = clean_phone_number(contract.phone_num)
                             if contract.user is not None:
                                 print("no user match")
                                 message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
