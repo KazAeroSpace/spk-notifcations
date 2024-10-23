@@ -27,6 +27,8 @@ class Command(BaseCommand):
         else:
             data = response.json()
             features = data.get('features')
+            created = 0
+            updated = 0
 
             for contract in features:
                 attrs = contract.get('attributes')
@@ -57,11 +59,15 @@ class Command(BaseCommand):
                         num=attrs.get('num_dogovora_arendy'),
                         phone_num=attrs.get('number_phone'),
                     )
-                    break
+                    created+=1
+                    # break
                 else:
                     payment_date = parse_timestamp(attrs.get('date_of_payment')),
                     last_payment_date = parse_timestamp(attrs.get('date_of_actual_payment')),
                     contract_obj.payment_date = payment_date
                     contract_obj.last_payment_date = last_payment_date
                     contract_obj.save()
+                    updated += 1
+            print("created: ", created)
+            print("updated: ", updated)
 

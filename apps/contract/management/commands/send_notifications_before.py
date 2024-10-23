@@ -42,6 +42,7 @@ class Command(BaseCommand):
                                         f"По вашему договору {contract_number} подходит срок оплаты: "
                                         f"{payment_date_str}.\nПожалуйста, не забудьте оплатить")
                         send_message_custom(chat_id=chat_id, message_text=message_text)
+                        print(f"notification sended: {contract_number}")
                 else:
                     print("more 7")
 
