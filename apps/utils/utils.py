@@ -174,8 +174,18 @@ def get_arcgis_token():
     except:
         raise CustomException(translate_code="arcgis_get_error", code=status.HTTP_400_BAD_REQUEST)
 
+
 def parse_timestamp(timestamp):
     if timestamp is not None:
         timestamp = int(timestamp) / 1000
         return datetime.fromtimestamp(timestamp)
     return None
+
+
+def clean_phone_number(phone_number):
+    # Если номер начинается с '8', заменить его на '+7'
+    if phone_number.startswith('8'):
+        phone_number = '+7' + phone_number[1:]
+    cleaned_number = phone_number.replace(" ", "")
+
+    return cleaned_number

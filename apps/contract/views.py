@@ -15,7 +15,10 @@ from django.conf import settings
 from .serializers import *
 from .models import Contract
 from apps.user.models import User, TgMessageHistory, MessageType
-from apps.utils.utils import send_message_for_get_contact, send_message_custom, send_message_remove_markup
+from apps.utils.utils import (send_message_for_get_contact,
+                              send_message_custom,
+                              send_message_remove_markup,
+                              clean_phone_number)
 
 bot = telebot.TeleBot(settings.TOKEN)
 
@@ -88,7 +91,7 @@ def handle_contact(message):
         print("has contact")
         user_obj = User.objects.filter(tg_chat_id=chat_id).last()
         if user_obj:
-            user_obj.phone = message.contact.phone_number
+            user_obj.phone = clean_phone_number(message.contact.phone_number)
             user_obj.save()
 
             print(f"user_obj 2: {user_obj}")
@@ -172,12 +175,13 @@ def receive_all_feedback(message):
                         ).last()
                         print(f"contract 2: {contract}")
                         if contract:
+                            contract_phone_num = contract.phone_num.replace(" ", "")
                             if contract.user is not None:
                                 print("no user match")
                                 message_text = (f"Договор номер {contract_number}\n связан не с вами.\n"
                                                 f"Пожалуйста, наберите /start чтобы проверить другой номер договора")
                                 send_message_custom(chat_id=chat_id, message_text=message_text)
-                            if contract.phone_num == user.phone:
+                            if contract_phone_num == user.phone:
                                 print("user phone match")
                                 contract.user = user
                                 contract.save()

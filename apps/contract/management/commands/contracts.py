@@ -10,6 +10,7 @@ from apps.contract.models import Contract
 from apps.utils.utils import get_arcgis_token, parse_timestamp
 from apps.utils.exceptions import CustomException
 
+
 class Command(BaseCommand):
     help = "fill contracts"
 
