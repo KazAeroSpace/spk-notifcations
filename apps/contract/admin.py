@@ -10,6 +10,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('id',
                     'region',
                     'oid',
+                    'user',
                     'exp_date',
                     'num',
                     'phone_num',
