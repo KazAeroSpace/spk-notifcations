@@ -11,6 +11,7 @@ class UserAdmin(admin.ModelAdmin):
                     'region',
                     'oid',
                     'exp_date',
+                    'num',
                     'phone_num',
                     'payment_date',
                     'last_payment_date',
