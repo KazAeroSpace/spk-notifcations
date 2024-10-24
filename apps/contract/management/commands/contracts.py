@@ -62,8 +62,8 @@ class Command(BaseCommand):
                     created+=1
                     # break
                 else:
-                    payment_date = parse_timestamp(attrs.get('date_of_payment')),
-                    last_payment_date = parse_timestamp(attrs.get('date_of_actual_payment')),
+                    payment_date = parse_timestamp(str(attrs.get('date_of_payment')))
+                    last_payment_date = parse_timestamp(str(attrs.get('date_of_actual_payment')))
                     print(f"payment_date: {payment_date}")
                     print(f"last_payment_date: {last_payment_date}")
                     contract_obj.payment_date = payment_date
