@@ -68,7 +68,7 @@ class Command(BaseCommand):
                     print(f"last_payment_date: {last_payment_date}")
                     contract_obj.payment_date = payment_date
                     contract_obj.last_payment_date = last_payment_date
-                    contract_obj.phone_num = attrs.get('number_phone'),
+                    contract_obj.phone_num = attrs.get('number_phone')
                     contract_obj.save()
                     updated += 1
             print("created: ", created)
