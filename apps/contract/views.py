@@ -131,7 +131,9 @@ def receive_all_feedback(message):
     if user:
         print(f"user: {user}")
         user_phone = user.phone
-        cleaned_feedback = message.text
+        cleaned_contract_number = message.text
+        if cleaned_contract_number:
+            cleaned_contract_number = cleaned_contract_number.replace(' ', '')
         username = ""
 
         if user_phone and user_phone != "":
@@ -154,7 +156,7 @@ def receive_all_feedback(message):
 
                 if check_history.message_type == MessageType.ASK_CONTRACT_NUMBER:
                     print(f"check_history.message_type: {check_history.message_type}")
-                    contract_number = cleaned_feedback
+                    contract_number = cleaned_contract_number
                     contract = Contract.objects.filter(user=user).last()
                     print(f"contract 1: {contract}")
                     if contract:

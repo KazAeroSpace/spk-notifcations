@@ -37,6 +37,9 @@ class Command(BaseCommand):
                     oid=oid,
                 ).last()
                 if contract_obj is None:
+                    contract_number = attrs.get('num_dogovora_arendy')
+                    if contract_number:
+                        contract_number.replace(" ", "")
                     Contract.objects.create(
                         oid=oid,
                         location=attrs.get('location'),
@@ -56,16 +59,19 @@ class Command(BaseCommand):
                         payment_date=parse_timestamp(attrs.get('date_of_payment')),
                         last_payment_date=parse_timestamp(attrs.get('date_of_actual_payment')),
                         globalid=attrs.get('globalid'),
-                        num=attrs.get('num_dogovora_arendy'),
+                        num=contract_number,
                         phone_num=attrs.get('number_phone'),
                     )
-                    created+=1
+                    created += 1
                     # break
                 else:
+                    contract_number = attrs.get('num_dogovora_arendy')
+                    if contract_number:
+                        contract_number.replace(" ", "")
                     payment_date = parse_timestamp(attrs.get('date_of_payment'))
                     last_payment_date = parse_timestamp(attrs.get('date_of_actual_payment'))
-                    print(f"payment_date: {payment_date}")
-                    print(f"last_payment_date: {last_payment_date}")
+
+                    contract_obj.num = contract_number
                     contract_obj.payment_date = payment_date
                     contract_obj.last_payment_date = last_payment_date
                     contract_obj.phone_num = attrs.get('number_phone')
