@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     last_time_difference = now_date - last_payment_date
                 print(f"last_time_difference.days: {last_time_difference.days}")
                 # Если до оплаты осталось 7 дней и при этом последняя оплата была в теч 7 дней назад и вперед
-                if time_difference.days == 7:
+                if time_difference.days == -7:
                     if contract.user.tg_chat_id:
                         contract_number = contract.num
                         payment_date_str = payment_date.strftime('%d.%m.%Y')
